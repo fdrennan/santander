@@ -1,0 +1,9 @@
+"0","map_dfc("
+"0","  res,"
+"0","  list(true_test),"
+"0","  function(x, y) {"
+"0","    tibble(prediction = unlist(predict(x, y$test)))"
+"0","  }"
+"0",")"
+"2","Error: Index 1 must have length 1, not 200
+"

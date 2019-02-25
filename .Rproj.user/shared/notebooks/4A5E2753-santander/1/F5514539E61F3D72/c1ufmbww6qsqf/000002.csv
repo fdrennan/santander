@@ -1,0 +1,8 @@
+"0","simple_clean <- function(x) {"
+"0","  x <- "
+"0","    x %>% "
+"0","    select(-ID_code) %>% "
+"0","    mutate_at(vars(one_of('target')), function(x) {"
+"0","      as_factor(as.character(x), levels = c(""0"" = 0, ""1"" = 1))"
+"0","    })"
+"0","}"

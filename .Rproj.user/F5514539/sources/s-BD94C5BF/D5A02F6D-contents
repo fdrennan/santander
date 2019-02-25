@@ -1,0 +1,246 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(tidymodels)
+library(xgboost)
+library(zeallot)
+library(tictoc)
+library(ROCR)
+set.seed(1)
+```
+
+# Download Data Function
+```{r}
+download_data <- function() {
+  if(file.exists('data.rda')) {
+    data = read_rds('data.rda')
+  } else {
+    data = read_csv('https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data',
+                col_names = FALSE)
+    write_rds(data, 'data.rda')
+    return (data)
+  }
+  
+}
+```
+
+# Clean Data Function
+```{r}
+clean_data <- function(data, factor_lump = .05) {
+  data <-
+    data %>%
+    mutate(
+      X15 = if_else(data$X15 == "<=50K", 0, 1)
+    ) %>%
+    mutate_if(function(x) !is.numeric(x), as.factor) %>%
+    rename(target = X15) %>%
+    mutate_if(is.factor,
+              function(x) fct_lump(x, prop = factor_lump))
+  
+  data
+}
+```
+
+# Create Split Function
+```{r}
+create_split <- function(df, strata = NULL, prop = .8) {
+  train_test_split <- initial_split(df, strata = strata, prop = prop)
+  df_train <- training(train_test_split)
+  df_test <- testing(train_test_split)
+  list(df_train, df_test)
+}
+```
+
+# Recipe Function
+```{r}
+recipe_ensemble <- function(train, test, target, type, center_scale = TRUE) {
+
+  # Create the formula for the model
+  model_form <- as.formula(paste0(target, " ~ ."))
+
+  if(type == 'classification') {
+    # Create the recipe
+    standardized <- recipe(model_form, data = train)
+
+    if(center_scale) {
+      standardized <-
+        standardized%>%
+        step_center(all_predictors(), - all_nominal()) %>%
+        step_scale(all_predictors(), -all_nominal())
+
+    }
+    if(ncol(train %>% select_if(function(x) !is.numeric(x))) > 0) {
+      standardized <-
+        standardized %>%
+        step_dummy(all_predictors(), -all_numeric(), one_hot = TRUE)
+    }
+
+    trained_rec <- prep(standardized, training = train)
+  }
+
+
+  train <- bake(trained_rec, new_data = train)
+  test  <- bake(trained_rec, new_data = test)
+
+  list(train, test)
+}
+```
+
+# Df 2 XGB Function
+```{r}
+df_2_xgb <- function(data, target_col = NULL) {
+  target_column = colnames(data) == target_col
+  target = data[,target_column] %>% unlist
+  target_data = as.matrix(data[,!target_column])
+  xgb.DMatrix(
+    data  = target_data,
+    label= target
+  )
+}
+```
+
+# Train XGB Function
+```{r}
+train_xgb <- function(folds, params, id = NULL, ...) {
+  
+  if(!is.null(id)) {
+    cat(id, "\n")
+  }
+  
+  train = analysis(folds)
+  valid = assessment(folds)
+  
+  train.mat = df_2_xgb(train, 'target')
+  valid.mat = df_2_xgb(valid, 'target')
+  
+  # Train the XGBoost classifer
+  xgb.fit=xgb.train(
+    params=params,
+    data=train.mat,
+    watchlist=list(val1=valid.mat),
+    ...
+  )
+  
+  predictions <- col_maximum(predict(xgb.fit, valid.mat, reshape = TRUE))
+  
+  list(model = xgb.fit,
+       train = train, 
+       valid = valid,
+       predictions = predictions,
+       target      = valid$target,
+       table       = table(predictions, valid$target),
+       accuracy    = accuracy_vec(as.factor(predictions), as.factor(valid$target)))
+}
+```
+
+# Run Models Function
+```{r}
+run_models <- function(folds, params, ...) {
+  map2(
+    folds$splits, paste0(folds$id," ", folds$id2),
+    function(x, y) train_xgb(x, params, y, ...)
+  )
+}
+```
+
+# Column Maximum Function
+```{r}
+col_maximum <- function(data) {
+  max_cols_by_row <- apply(data, 1, max) == data
+  apply(max_cols_by_row, 1, function(x) (1:length(x))[x]) - 1
+}
+
+```
+
+
+
+
+# Import Data
+```{r}
+data = download_data()
+```
+
+# Clean up the data
+```{r}
+factor_lump = .05
+data <- clean_data(data, factor_lump = factor_lump) 
+```
+
+
+# Split into test/train
+```{r}
+c(train_split, test_split) %<-% 
+  create_split(data, prop = .8)
+```
+
+# Use recipies to scale/dummify
+```{r}
+c(train, test) %<-% 
+  recipe_ensemble(
+    train = train_split,
+    test  = test_split,
+    target = 'target',
+    type = "classification",
+    center_scale = TRUE
+  )
+```
+
+# Create Folds
+```{r}
+cv_folds <- vfold_cv(train, v = 10, repeats = 10)
+```
+
+
+# Run models / Parameters
+```{r}
+# https://xgboost.readthedocs.io/en/latest/parameter.html
+params = list(
+  booster = "gbtree",
+  eta=0.1, 
+  max_depth=6,  
+  gamma=0, 
+  min_child_weight = 2, # [default=1]
+  max_delta_step = 0, # might help in logistic regression when class is extremely imbalanced. 
+  subsample=.5,
+  colsample_bytree=1,
+  objective="multi:softprob",
+  eval_metric = "mlogloss", # logloss, auc, aucpr
+  lambda = 0, # default 1
+  alpha = 0, # default 0
+  num_class=2,
+  tree_method = "exact", # auto, exact, approx, hist, gpu_exact, gpu_hist
+  seed = 1
+)
+tic()
+models <- run_models(cv_folds, 
+                     params,     
+                     nrounds=5000,
+                     nthreads=4,
+                     early_stopping_rounds=10,
+                     verbose=0)
+```
+
+
+# Sink Data
+```{r}
+accuracies <- map_dbl(
+  models,
+  function(x) x$accuracy
+) 
+
+data_params <- list(
+  factor_lump = factor_lump
+)
+
+t.test(accuracies)
+```
+

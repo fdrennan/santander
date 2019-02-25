@@ -1,0 +1,233 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+library(recipes)
+library(rsample)
+library(ranger)
+library(caret)
+library(parsnip)
+library(xgboost)
+library(pROC)
+```
+
+```{r}
+train = read_csv('train.csv')
+true_test = read_csv('test.csv')
+example = read_csv('sample_submission.csv')
+```
+
+```{r}
+simple_clean <- function(x) {
+  x <- 
+    x %>% 
+    select(-ID_code) %>% 
+    mutate_at(vars(one_of('target')), function(x) {
+      as_factor(as.character(x), levels = c("0" = 0, "1" = 1))
+    })
+}
+```
+
+```{r}
+train = simple_clean(train)
+```
+
+```{r}
+id_code = true_test$ID_code
+true_test  = simple_clean(true_test)
+```
+
+
+
+# Create samples to train on
+```{r}
+train_samples = mc_cv(train, prop = .99, strata = "target", times = 1)
+```
+
+```{r}
+clean_sample <- function(x, return_data = FALSE) {
+  
+  train = analysis(x)
+  test = assessment(x)
+  
+  rec <- recipe(target ~ .,
+                data = train)
+
+  data_filter <- rec %>%
+    step_center(all_predictors()) %>%
+    step_scale(all_predictors())
+
+  filter_obj <- prep(data_filter, training = train)
+  
+  if(return_data) {
+    return(filter_obj)
+  }
+
+  filtered_tr <- bake(filter_obj, train)
+  filtered_te <- bake(filter_obj, test)
+  
+  list(train = filtered_tr, test = filtered_te)
+  
+  
+}
+
+models <- map(
+  train_samples[[1]], clean_sample
+)
+
+baker <- map(
+  train_samples[[1]], function(x) {
+    clean_sample(x, return_data = TRUE)
+  }
+)
+
+
+write_rds(models, 'models.rda')
+```
+
+
+```{r}
+models  = read_rds('models.rda')
+
+df_2_xgb <- function(data, target_col = NULL) {
+  target_column = colnames(data) == target_col
+  target = data[,target_column] %>% unlist
+  target = as.integer(target)-1
+  target_data = as.matrix(data[,!target_column])
+  xgb.DMatrix(
+    data  = target_data,
+    label= target
+  )
+}
+
+run_sample <- function(x) {
+  
+  train <-  x$train 
+  test <- x$test
+  # Running a logistic regression
+  if(FALSE) {
+    model <- logistic_reg(penalty = 10, mixture = 0.1) %>% 
+      set_engine("glm") %>% 
+      fit(target ~ ., data = train)
+  }
+  
+  if(FALSE) {
+    model <- rand_forest(mtry = 12, trees = 2000) %>%
+    set_engine("ranger", importance = 'impurity') %>%
+    fit(target ~ ., data = train)
+  }
+  
+  if(TRUE) {
+    # train = mutate(train, target = as.integer(target))
+    # target = Matrix::as.matrix(select(train,target)) - 1
+    # train = Matrix::as.matrix(select(train,-target))
+    
+    # dtrain <- xgb.DMatrix(data = train, label = target)
+    
+    train.mat = df_2_xgb(train, 'target')
+    valid.mat = df_2_xgb(test, 'target')
+    
+    params <-  list(
+        booster = "gbtree",
+        eta=0.3, 
+        # max_depth=6,  
+        # gamma=0, 
+        # min_child_weight = 2, # [default=1]
+        # max_delta_step = 0, # might help in logistic regression when class is extremely imbalanced. 
+        # subsample=.5,
+        colsample_bytree=1,
+        objective= "reg:logistic",
+        eval_metric = "auc", # logloss, auc, aucpr
+        lambda = 1, # default 1
+        alpha = 0, # default 0
+        # num_class=2,
+        tree_method = "exact", # auto, exact, approx, hist, gpu_exact, gpu_hist
+        seed = 1
+      )
+    
+    model=xgb.train(
+        params=params,
+        data=train.mat,
+        watchlist=list(val1=valid.mat),
+        nrounds=500,
+        nthreads=4,
+        early_stopping_rounds=2,
+        verbose=1)
+   
+  }
+  
+  model
+  
+}
+
+res = map(
+  models, run_sample
+)
+```
+
+
+```{r}
+preds = map2(
+  res,
+  models,
+  function(x, y) {
+    test = y$test
+    
+    if("xgb.Booster"  == class(x)) {
+      
+      
+      test = mutate(test, target = as.integer(target))
+      target = Matrix::as.matrix(select(test, target)) - 1
+      test = Matrix::as.matrix(select(test,-target))
+      test <- xgb.DMatrix(data = test, label = target)
+      data = predict(x, test)
+      preds = as.numeric(data > .5)
+  
+    } else {
+      preds = unlist(predict(x, test))
+    }
+    
+    tibble(prediction = preds,
+           actual     = y$test$target)
+  }
+)
+```
+
+
+```{r}
+map(
+  preds,
+  function(x) {
+    confusionMatrix(table(x))
+  }
+)
+```
+
+```{r}
+plot(roc(preds[[1]]$actual,preds[[1]]$prediction), legacy.axes = TRUE)
+```
+
+
+```{r}
+true_test = bake(baker$`1`, true_test)
+true_test = select(true_test, -target)
+data = xgb.DMatrix(data = as.matrix(true_test))
+predictions = predict(res$`1`, data)
+```
+
+
+```{r}
+act_preds <- tibble(
+  ID_code = id_code,
+  target = predictions
+) 
+```
+
+
+```{r}
+write_csv(act_preds, 'predictions2.csv')
+```

@@ -1,0 +1,4 @@
+"0","true_test = bake(baker$`1`, true_test)"
+"0","true_test = select(true_test, -target)"
+"0","data = xgb.DMatrix(data = as.matrix(true_test))"
+"0","predictions = predict(res$`1`, data)"

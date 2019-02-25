@@ -1,0 +1,8 @@
+"0","preds = map2("
+"0","  res,"
+"0","  models,"
+"0","  function(x, y) {"
+"0","    tibble(prediction = unlist(predict(x, y$test)),"
+"0","           actual     = y$test$target)"
+"0","  }"
+"0",")"
