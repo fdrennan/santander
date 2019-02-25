@@ -23,3 +23,90 @@ git commit -m 'update'
 ]0;~/Documents/R/santanderdigitalfirstmedia@Digitals-MacBook-Pro [32m~/Documents/R/santander[33m (master)[00m $ 
 ]0;~/Documents/R/santanderdigitalfirstmedia@Digitals-MacBook-Pro [32m~/Documents/R/santander[33m (master)[00m $ c[Kvim .gitignore
 [?2004h]0;~/Documents/R/santanderdigitalfirstmedia@Digitals-MacBook-Pro [32m~/Documents/R/santander[33m (master)[00m $ git add --all
+]0;~/Documents/R/santanderdigitalfirstmedia@Digitals-MacBook-Pro [32m~/Documents/R/santander[33m (master)[00m $ git commit -m 'update'
+[master 9471593] update
+ 82 files changed, 1100687 insertions(+)
+ create mode 100644 .Rproj.user/F5514539/console06/DF03A711
+ create mode 100644 .Rproj.user/F5514539/console06/DF03A711.env
+ create mode 100644 .Rproj.user/F5514539/console06/INDEX001
+ create mode 100644 .Rproj.user/F5514539/sources/prop/2AAA8008
+ create mode 100644 .Rproj.user/F5514539/sources/prop/921510B2
+ create mode 100644 .Rproj.user/F5514539/sources/prop/C29594D6
+ create mode 100644 .Rproj.user/F5514539/sources/prop/INDEX
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/171CE3D9-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/2547B0B-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/28059A09
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/28059A09-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/2DF10573-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/30652562-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/384FCA46-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/4A6A21C8-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/59CCA04-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/5C74B0B7-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/69761C3-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/785B3749-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/901DCF6B-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/9854B05A-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/A299DC3B-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/A776ACD5-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/B5B36F68-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/C540CB8F-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/C6D11578-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/C6F16146-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/D5A02F6D
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/D5A02F6D-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/E43616BB-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/EA204767-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/EA98693A-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/F3E25CC6-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/F45499E7-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/F9D6E45F-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/FED36BAE-contents
+ create mode 100644 .Rproj.user/F5514539/sources/s-BD94C5BF/lock_file
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F55145399BA8990E/chunks.json
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539BD94C5BF/chunks.json
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/c1ufmbww6qsqf/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/c3tid1nk7ft6p/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/c6907h3u890vo/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/chunks.json
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/cif0c9y2smcbw/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/cj5ndha0z9imj/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/cpp30donhk6zn/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/cr13zk8n5bfgz/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/crkds6x7w98zl/000004.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/crw8p6z97lfe7/000004.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/cs84pw21jrxgq/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/ctzlsyz4g88cc/000010.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/F5514539E61F3D72/cwe5ct099j2iw/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/c0oefu91w6kkl/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/c3d6jectz2ury/000028.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/c6ygp0em6t4hc/000004.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/c73zd9wr3boqi/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/c9aywm1hekijk/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/cb4onuipkl5sr/00001c.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/chunks.json
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/ck8vnoyzb5cxn/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/ck9k1wczsprqh/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/cltaqrd47grm3/000008.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/cltaqrd47grm3/000009.metadata
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/cltaqrd47grm3/000009.png
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/cltaqrd47grm3/000009.snapshot
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/cpqmg2vnv489v/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/cqyhhm3iswp7l/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/csshpxcmn2x25/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/cvzeikz3tq0o3/000004.csv
+ create mode 100644 .Rproj.user/shared/notebooks/4A5E2753-santander/1/s/cyp66zcidd5z6/000002.csv
+ create mode 100644 .Rproj.user/shared/notebooks/B1CE726D-xgb/1/F5514539BD94C5BF/chunks.json
+ create mode 100644 .Rproj.user/shared/notebooks/B1CE726D-xgb/1/s/chunks.json
+ create mode 100644 .Rproj.user/shared/notebooks/patch-chunk-names
+ create mode 100644 .Rproj.user/shared/notebooks/paths
+ create mode 100644 .gitignore
+ create mode 100644 predictions1.csv
+ create mode 100644 predictions2.csv
+ create mode 100644 predictions3.csv
+ create mode 100755 sample_submission.csv
+ create mode 100644 santander.Rmd
+ create mode 100644 santander.Rproj
+ create mode 100644 santander.nb.html
+]0;~/Documents/R/santanderdigitalfirstmedia@Digitals-MacBook-Pro [32m~/Documents/R/santander[33m (master)[00m $ git [K[K[K[Kvim .gitignore
+[?2004h]0;~/Documents/R/santanderdigitalfirstmedia@Digitals-MacBook-Pro [32m~/Documents/R/santander[33m (master)[00m $ git add --all
